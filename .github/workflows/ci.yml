@@ -1,0 +1,35 @@
+name: Percy Visual Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          npm install cypress @percy/cli @percy/cypress --save-dev
+
+      - name: Start static server
+        run: npx serve . -l 5000 &
+        env:
+          NODE_ENV: test
+
+      - name: Wait for server
+        run: npx wait-on http://localhost:5000
+
+      - name: Run Percy + Cypress
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+        run: npx percy exec -- npx cypress run --config baseUrl=http://localhost:5000
