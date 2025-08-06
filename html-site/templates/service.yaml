@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: html-site
+spec:
+  selector:
+    app: html-site
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

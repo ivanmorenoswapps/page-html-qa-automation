@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: html-site
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ivanmorenoswapps/page-html-qa-automation
+    targetRevision: HEAD
+    path: html-site             
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
